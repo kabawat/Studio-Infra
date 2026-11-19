@@ -67,12 +67,10 @@ def resolve_service_directory(backend_root: Path, service: str) -> Path:
     custom_dir = os.environ.get(env_var_name)
     if custom_dir:
         return Path(custom_dir)
-    mapped = SERVICE_DIRECTORIES[service]
-    if (backend_root / mapped).is_dir():
-        return backend_root / mapped
-    if (backend_root / service).is_dir():
-        return backend_root / service
-    return backend_root / mapped
+    for candidate in (f"studio-{service}", service, SERVICE_DIRECTORIES[service]):
+        if (backend_root / candidate).is_dir():
+            return backend_root / candidate
+    return backend_root / SERVICE_DIRECTORIES[service]
 
 
 def configure(

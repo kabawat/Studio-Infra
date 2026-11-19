@@ -132,20 +132,20 @@ prompt_redis_host() {
 service_directory() {
   local service="$1"
   local _production="$2"
+  local lower="${service,,}"
   local env_var="${service^^}_DIR"
   if [[ -n "${!env_var:-}" ]]; then
     printf '%s' "${!env_var}"
     return
   fi
 
-  case "${service,,}" in
-    auth) printf '%s/studio-auth' "$BACKEND_ROOT" ;;
-    core) printf '%s/studio-core' "$BACKEND_ROOT" ;;
-    payment) printf '%s/studio-payment' "$BACKEND_ROOT" ;;
-    utility) printf '%s/studio-utility' "$BACKEND_ROOT" ;;
-    config) printf '%s/config' "$BACKEND_ROOT" ;;
-    *) printf '%s/%s' "$BACKEND_ROOT" "${service,,}" ;;
-  esac
+  if [[ -d "$BACKEND_ROOT/studio-$lower" ]]; then
+    printf '%s/studio-%s' "$BACKEND_ROOT" "$lower"
+  elif [[ -d "$BACKEND_ROOT/$lower" ]]; then
+    printf '%s/%s' "$BACKEND_ROOT" "$lower"
+  else
+    printf '%s/studio-%s' "$BACKEND_ROOT" "$lower"
+  fi
 }
 
 check_prerequisites() {
