@@ -1,0 +1,12 @@
+# Local Redis credentials and runtime data
+/.env
+/redis/.env
+/redis/secrets/
+/redis/backups/
+
+# Python-generated files
+**/__pycache__/
+*.py[cod]
+
+/redis/secrets-production/
+/redis/.env.production

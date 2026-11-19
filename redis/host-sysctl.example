@@ -1,0 +1,3 @@
+# Apply through host configuration management before production rollout.
+# Observed host currently reports Redis fork/overcommit warnings.
+vm.overcommit_memory = 1

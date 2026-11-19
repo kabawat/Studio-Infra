@@ -1,0 +1,66 @@
+name: redis
+services:
+  redis:
+    image: redis:8.10.3-alpine@sha256:21090af93f8324db2f0f0f4f38a7c60369d47d917e000c3423d89d2ae2883537
+    container_name: ${REDIS_CONTAINER_NAME:-redis}
+    restart: unless-stopped
+    init: true
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    user: 999:999
+    entrypoint:
+      - /bin/sh
+      - /opt/redis/start.sh
+    environment:
+      REDIS_MAXMEMORY: ${REDIS_MAXMEMORY:-256mb}
+    volumes:
+      - redis_data:/data
+      - ./redis.conf:/etc/redis/redis.conf:ro
+      - ./scripts:/opt/redis:ro
+    secrets:
+      - redis_acl
+      - monitor_password
+    tmpfs:
+      - /tmp:size=8m,uid=999,gid=999,mode=0700
+    networks:
+      redis-private:
+        aliases:
+          - redis
+          - dragbizz-redis
+    mem_limit: ${REDIS_CONTAINER_MEMORY:-768m}
+    cpus: ${REDIS_CPUS:-1.0}
+    pids_limit: 64
+    ulimits:
+      nofile:
+        soft: 4096
+        hard: 4096
+    stop_grace_period: 60s
+    healthcheck:
+      test:
+        - CMD
+        - sh
+        - /opt/redis/healthcheck.sh
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: '3'
+volumes:
+  redis_data:
+    name: ${REDIS_VOLUME_NAME:-redis-data}
+networks:
+  redis-private:
+    name: ${REDIS_NETWORK_NAME:-redis-private}
+    internal: true
+secrets:
+  redis_acl:
+    file: ./secrets/users.acl
+  monitor_password:
+    file: ./secrets/monitor_password

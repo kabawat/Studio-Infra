@@ -1,0 +1,5 @@
+secrets/
+backups/
+.env
+__pycache__/
+*.py[cod]
