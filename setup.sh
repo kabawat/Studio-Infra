@@ -12,7 +12,7 @@ load_infra_env() {
     set +a
   fi
   BACKEND_ROOT="${BACKEND_ROOT:-$DEFAULT_BACKEND_ROOT}"
-  studio_DIR="${studio_DIR:-/etc/studio}"
+  studio_DIR="${studio_DIR:-${STUDIO_DIR:-/etc/studio}}"
   PKI_ROOT="$studio_DIR/pki"
   CA_DIR="$PKI_ROOT/ca"
   AUTH_KEYS_DIR="$studio_DIR/auth/keys"
@@ -278,6 +278,9 @@ setup_service_pki() {
   if [[ "$has_key" == false ]]; then
     run_openssl genrsa -out "$key_file" 2048
     as_root chmod 600 "$key_file"
+    if [[ $EUID -eq 0 || "$NEED_SUDO" == true ]]; then
+      as_root chown 1000:1000 "$key_file" 2>/dev/null || true
+    fi
   fi
 
   local san_line="$CERT_SAN"
