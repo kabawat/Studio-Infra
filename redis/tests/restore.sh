@@ -12,7 +12,7 @@ REDIS_DIRECTORY=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 require_docker
 
 snapshot=${1:?Supply an absolute path to a verified test snapshot}
-restore_volume="dragbizz-redis-restore-test-$(date +%s)-$$"
+restore_volume="studio-redis-restore-test-$(date +%s)-$$"
 restore_override=$(mktemp)
 redis_image=${REDIS_TEST_IMAGE:-redis:8.10.3-alpine}
 operator_password="$REDIS_DIRECTORY/secrets/operator.env"

@@ -1,8 +1,8 @@
-# DragBizz Infra
+# studio Infra
 
 Shared Redis infrastructure for Auth, Core, Finance, Utility and Brain.
 
-Services connect on the private `redis-private` network using the `redis` or `dragbizz-redis` alias, DB `0`. Each service has its own ACL user and password. Redis has no published host port.
+Services connect on the private `redis-private` network using the `redis` or `studio-redis` alias, DB `0`. Each service has its own ACL user and password. Redis has no published host port.
 
 The data volume defaults to `redis-data` and can be changed with `REDIS_VOLUME_NAME`. Configuration, credential scripts and backup tools are under `redis/`.
 

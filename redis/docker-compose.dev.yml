@@ -29,7 +29,7 @@ services:
       redis-private:
         aliases:
           - redis
-          - dragbizz-redis
+          - studio-redis
     mem_limit: ${REDIS_CONTAINER_MEMORY:-768m}
     cpus: ${REDIS_CPUS:-1.0}
     pids_limit: 64

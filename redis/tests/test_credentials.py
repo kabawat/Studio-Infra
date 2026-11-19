@@ -57,13 +57,13 @@ class CredentialTests(unittest.TestCase):
     def test_custom_redis_host_is_used_for_service_envs(self):
         with tempfile.TemporaryDirectory() as temporary:
             destination = Path(temporary) / "secrets"
-            generate_credentials(destination, host="dragbizz-redis")
+            generate_credentials(destination, host="studio-redis")
             for service in SERVICES:
                 values = dict(
                     line.split("=", 1)
                     for line in (destination / f"{service}.env").read_text().splitlines()
                 )
-                self.assertEqual(values["REDIS_HOST"], "dragbizz-redis")
+                self.assertEqual(values["REDIS_HOST"], "studio-redis")
 
     def test_existing_credentials_are_never_overwritten(self):
         with tempfile.TemporaryDirectory() as temporary:

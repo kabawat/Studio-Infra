@@ -12,11 +12,11 @@ load_infra_env() {
     set +a
   fi
   BACKEND_ROOT="${BACKEND_ROOT:-$DEFAULT_BACKEND_ROOT}"
-  DRAGBIZZ_DIR="${DRAGBIZZ_DIR:-/etc/dragbizz}"
-  PKI_ROOT="$DRAGBIZZ_DIR/pki"
+  studio_DIR="${studio_DIR:-/etc/studio}"
+  PKI_ROOT="$studio_DIR/pki"
   CA_DIR="$PKI_ROOT/ca"
-  AUTH_KEYS_DIR="$DRAGBIZZ_DIR/auth/keys"
-  UTILITY_KEYS_DIR="$DRAGBIZZ_DIR/utility/keys"
+  AUTH_KEYS_DIR="$studio_DIR/auth/keys"
+  UTILITY_KEYS_DIR="$studio_DIR/utility/keys"
   DEFAULT_REDIS_HOST="${REDIS_HOST:-redis}"
 }
 
@@ -37,7 +37,7 @@ usage() {
   cat <<'HELP'
 Usage: bash setup.sh [--prod] [-y|--yes] [--ip <SERVER_IP>] [--force-certs] [--no-start]
 
-  No option      Development mode (uses DragBizz-* folders if present, then unprefixed).
+  No option      Development mode (uses studio-* folders if present, then unprefixed).
   --prod         Production mode (uses Auth/Core/Finance/Utility/Brain folders).
   -y, --yes      Run non-interactively with defaults.
   --ip <IP>      Add an extra server IP to generated service certificate SANs.
@@ -66,22 +66,22 @@ valid_ipv4() {
   done
 }
 
-# Check if we need sudo to manage files under DRAGBIZZ_DIR
+# Check if we need sudo to manage files under studio_DIR
 setup_privileges() {
   if [[ $EUID -eq 0 ]]; then
     NEED_SUDO=false
     return
   fi
-  if [[ -d "$DRAGBIZZ_DIR" ]]; then
-    if [[ -O "$DRAGBIZZ_DIR" && -w "$DRAGBIZZ_DIR" ]]; then
+  if [[ -d "$studio_DIR" ]]; then
+    if [[ -O "$studio_DIR" && -w "$studio_DIR" ]]; then
       NEED_SUDO=false
       return
     fi
-  elif [[ -w "$(dirname "$DRAGBIZZ_DIR")" ]]; then
+  elif [[ -w "$(dirname "$studio_DIR")" ]]; then
     NEED_SUDO=false
     return
   fi
-  command -v sudo >/dev/null 2>&1 || fail "Run as root or install sudo to manage $DRAGBIZZ_DIR."
+  command -v sudo >/dev/null 2>&1 || fail "Run as root or install sudo to manage $studio_DIR."
   NEED_SUDO=true
 }
 
@@ -183,7 +183,7 @@ setup_root_ca() {
   echo "Creating Root CA in $CA_DIR..."
   as_root install -d -m 0755 "$CA_DIR"
   run_openssl req -x509 -newkey rsa:4096 -nodes -days 3650 \
-    -keyout "$ca_key" -out "$ca_crt" -subj "/CN=DragBizz Internal CA"
+    -keyout "$ca_key" -out "$ca_crt" -subj "/CN=studio Internal CA"
   as_root chmod 600 "$ca_key"
   as_root chmod 644 "$ca_crt"
 }
@@ -196,31 +196,31 @@ service_pki_spec() {
       CERT_NAME="server"
       CERT_CN="auth"
       CERT_EKU="serverAuth, clientAuth"
-      CERT_SAN="URI:spiffe://dragbizz/service/auth,DNS:auth,DNS:dragbizz-auth,DNS:localhost,DNS:host.docker.internal,IP:127.0.0.1"
+      CERT_SAN="URI:spiffe://studio/service/auth,DNS:auth,DNS:studio-auth,DNS:localhost,DNS:host.docker.internal,IP:127.0.0.1"
       ;;
     Core)
       CERT_NAME="server"
       CERT_CN="core"
       CERT_EKU="serverAuth, clientAuth"
-      CERT_SAN="URI:spiffe://dragbizz/service/core,DNS:core,DNS:dragbizz-core,DNS:dragbizz-core-intelligence,DNS:dragbizz-retailer,DNS:localhost,DNS:host.docker.internal,IP:127.0.0.1"
+      CERT_SAN="URI:spiffe://studio/service/core,DNS:core,DNS:studio-core,DNS:studio-core-intelligence,DNS:studio-retailer,DNS:localhost,DNS:host.docker.internal,IP:127.0.0.1"
       ;;
     Payment)
       CERT_NAME="server"
       CERT_CN="payment"
       CERT_EKU="serverAuth, clientAuth"
-      CERT_SAN="URI:spiffe://dragbizz/service/payment,DNS:payment,DNS:studio-payment,DNS:localhost,DNS:host.docker.internal,IP:127.0.0.1"
+      CERT_SAN="URI:spiffe://studio/service/payment,DNS:payment,DNS:studio-payment,DNS:localhost,DNS:host.docker.internal,IP:127.0.0.1"
       ;;
     Utility)
       CERT_NAME="server"
       CERT_CN="utility"
       CERT_EKU="serverAuth, clientAuth"
-      CERT_SAN="URI:spiffe://dragbizz/service/utility,DNS:utility,DNS:dragbizz-utility,DNS:localhost,DNS:host.docker.internal,IP:127.0.0.1"
+      CERT_SAN="URI:spiffe://studio/service/utility,DNS:utility,DNS:studio-utility,DNS:localhost,DNS:host.docker.internal,IP:127.0.0.1"
       ;;
     Config)
       CERT_NAME="server"
       CERT_CN="config"
       CERT_EKU="serverAuth, clientAuth"
-      CERT_SAN="URI:spiffe://dragbizz/service/config,DNS:config,DNS:studio-config,DNS:localhost,DNS:host.docker.internal,IP:127.0.0.1"
+      CERT_SAN="URI:spiffe://studio/service/config,DNS:config,DNS:studio-config,DNS:localhost,DNS:host.docker.internal,IP:127.0.0.1"
       ;;
     *)
       fail "Unknown service: $service"

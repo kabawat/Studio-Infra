@@ -49,12 +49,12 @@ class SetupTests(unittest.TestCase):
             "sys.exit(0 if sys.argv[1:2] in (['info'], ['compose']) else 2)\n"
         )
         fake_docker.chmod(0o755)
-        self.dragbizz_dir = self.root / "etc-dragbizz"
+        self.studio_dir = self.root / "etc-studio"
         self.environment = {
             **os.environ,
             "PATH": f"{self.fake_bin}:{os.environ['PATH']}",
             "DOCKER_TRACE": str(self.trace),
-            "DRAGBIZZ_DIR": str(self.dragbizz_dir),
+            "studio_DIR": str(self.studio_dir),
         }
 
     def run_setup(self, *arguments, input_text=None):

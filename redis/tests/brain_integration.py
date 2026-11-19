@@ -10,7 +10,7 @@ from uuid import uuid4
 
 REDIS_DIRECTORY = Path(__file__).resolve().parents[1]
 BACKEND_DIRECTORY = REDIS_DIRECTORY.parents[1]
-sys.path.insert(0, str(BACKEND_DIRECTORY / "DragBizz-Brain"))
+sys.path.insert(0, str(BACKEND_DIRECTORY / "studio-Brain"))
 
 from app.confirmations.redis_store import RedisConfirmationStore
 from app.core.exceptions import AppError
