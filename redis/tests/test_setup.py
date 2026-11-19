@@ -14,7 +14,7 @@ SERVICE_DIRS = {
     "core": "studio-core",
     "payment": "studio-payment",
     "utility": "studio-utility",
-    "config": "config",
+    "config": "studio-config",
 }
 
 

@@ -13,7 +13,7 @@ SERVICE_DIRECTORIES = {
     "core": "studio-core",
     "payment": "studio-payment",
     "utility": "studio-utility",
-    "config": "config",
+    "config": "studio-config",
 }
 REMOVED_KEYS = {"REDIS_KEY_PREFIX", "REDIS_MAX_RETRIES"}
 
@@ -76,7 +76,7 @@ def resolve_service_directory(backend_root: Path, service: str) -> Path:
 def configure(
     infra_root: Path, backend_root: Path, redis_host: str, *, production: bool = False
 ) -> None:
-    del production  # All environments use the same studio-* / config directory layout.
+    del production  # All environments use the same studio-* directory layout.
     secrets_directory = infra_root / "redis" / "secrets"
     configuration = []
     for service in SERVICES:

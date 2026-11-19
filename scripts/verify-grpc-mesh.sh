@@ -17,7 +17,7 @@ services = {
     "core": "studio-core",
     "payment": "studio-payment",
     "utility": "studio-utility",
-    "config": "config",
+    "config": "studio-config",
 }
 
 for svc, dirname in services.items():

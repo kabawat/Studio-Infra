@@ -16,7 +16,7 @@ SERVICE_DIRECTORIES = {
     "core": "studio-core",
     "payment": "studio-payment",
     "utility": "studio-utility",
-    "config": "config",
+    "config": "studio-config",
 }
 
 SCOPE_PATHS = {
@@ -24,7 +24,7 @@ SCOPE_PATHS = {
     "core": "studio-core/src/infrastructure/cache/redis/scope.js",
     "payment": "studio-payment/src/config/redis.scope.js",
     "utility": "studio-utility/src/infrastructure/queue/scope.js",
-    "config": "config/src/infrastructure/cache/redis/scope.js",
+    "config": "studio-config/src/infrastructure/cache/redis/scope.js",
 }
 
 

@@ -14,7 +14,7 @@ const SERVICE_DIRECTORIES = {
     auth: 'studio-auth',
     utility: 'studio-utility',
     payment: 'studio-payment',
-    config: 'config',
+    config: 'studio-config',
 };
 
 function serviceDirectory(service) {
